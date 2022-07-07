@@ -1,5 +1,28 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
+export default class ReferenceTimetables extends Plugin {
+	async onload() {
+		await this.loadSettings();
+	}
+
+	onunload() {
+
+	}
+
+	async loadSettings() {
+		this.settings = Object.assign(
+			{}, 
+			await this.loadData()
+		);
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+}
+
+
+// SAMPLE CODE
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
@@ -10,7 +33,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 	mySetting: 'default'
 }
 
-export default class MyPlugin extends Plugin {
+class MyPlugin extends Plugin {
 	settings: MyPluginSettings;
 
 	async onload() {
