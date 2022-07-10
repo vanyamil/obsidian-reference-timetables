@@ -19,7 +19,7 @@ function dataAsMarkdown(data: TableGenData) {
 	return res;
 }
 
-export function dataAsHtml(data: TableGenData, root: HTMLElement) {
+export function dataIntoHtml(data: TableGenData, root: HTMLElement) {
 	const table = root.createEl("table");
 	
 	// Table head - Column headers
@@ -36,6 +36,9 @@ export function dataAsHtml(data: TableGenData, root: HTMLElement) {
 		trow.createEl("th", {text: map.inquiry_file});
 		data.time_files.forEach(file => trow.createEl("td", (file in map.counts) ? {text: map.counts[file].toString()} : undefined));
 	}
+
+	// Add responsive table - horizontal scroll
+	root.toggleClass("overflow-x-auto", true);
 }
 
 export function renderData(data: TableGenData) {
