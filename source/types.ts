@@ -7,12 +7,12 @@ export type TableDataPerInquiry = {
 	counts: CountMap,
 	first_seen?: string,
 	last_seen?: string,
-}
+};
 
 export type TableGenData = {
 	maps: TableDataPerInquiry[],
 	time_files: string[],
-}
+};
 
 export type TableGenSettings = {
 	time_axis_path: string,
@@ -20,4 +20,4 @@ export type TableGenSettings = {
 	collect_links: LinkDirection,
 	include_first: boolean,
 	include_last: boolean,
-}
+};

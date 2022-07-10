@@ -1,5 +1,6 @@
 import {
 	mapValues as _mapValues,
+	mapKeys as _mapKeys,
 	mergeWith as _mergeWith,
 	pick as _pick,
 } from 'lodash-es';
@@ -31,8 +32,11 @@ function generateFrontLinks(resolvedLinks: LinkMap, sources: string[], targets: 
 
 // Find links from targets to sources
 function generateBackLinks(resolvedLinks: LinkMap, sources: string[], targets: string[]): LinkMap {
+	console.debug("generating back links");
 	const source_checked = _pick(resolvedLinks, targets);
-	const dest_checked = _mapValues(source_checked, val_map => _pick(val_map, targets));
+	console.debug("only with source", Object.keys(source_checked));
+	const dest_checked = _mapValues(source_checked, val_map => _pick(val_map, sources));
+	console.debug("after filter", dest_checked);
 	return dest_checked;
 }
 
@@ -47,6 +51,13 @@ function mergeCustomizer(objValue: any, srcValue: any): number|undefined {
 function sortedPaths(resolvedLinks: LinkMap, prefix: string): string[] {
 	let files: string[] = Object.keys(resolvedLinks).filter(path => path.startsWith(normalizePath(prefix)));
 	return files.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true }));
+}
+
+// Get just the basename of the file path (assuming file exists)
+function basename(filepath: string) {
+	const last_slash = filepath.lastIndexOf('/') + 1;
+	const last_dot = filepath.lastIndexOf('.');
+	return filepath.substring(last_slash, last_dot);
 }
 
 // Generate the table data based on settings
@@ -64,16 +75,18 @@ export default function generateData(settings: TableGenSettings, resolvedLinks: 
 
 	// Collect backlinks if needed (inquiry to time)
 	if (settings.collect_links != 'front') {
-		const back_links = generateBackLinks(resolvedLinks, inquire_files, time_files);
+		const back_links = generateBackLinks(resolvedLinks, time_files, inquire_files);
 		_mergeWith(final_links, back_links, mergeCustomizer);
 	}
+
+	console.debug("Final links", final_links);
 
 	// Assemble a map inquire_axis -> time_data
 	// time_data has aggregates and a map time_axis -> count
 	const maps: TableDataPerInquiry[] = inquire_files.map(file => {
 		let res: TableDataPerInquiry = {
-			inquiry_file: file,
-			counts: final_links[file] ?? [],
+			inquiry_file: basename(file),
+			counts: _mapKeys(final_links[file], (val, key) => basename(key)) ?? {},
 		};
 		// Also do some aggregates
 		if (settings.include_first && res.counts.length > 0) {
@@ -88,7 +101,7 @@ export default function generateData(settings: TableGenSettings, resolvedLinks: 
 	console.debug(maps);
 
 	return {
-		time_files,
+		time_files: time_files.map(key => basename(key)),
 		maps
 	};
 }

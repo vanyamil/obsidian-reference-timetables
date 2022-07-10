@@ -12,24 +12,16 @@ import {
 	LinkDirection,
 	TableGenSettings,
 } from './types';
-
+import {DEFAULT_GEN_SETTINGS} from './constants';
 import generateData from './generation';
-import renderData from './rendering';
-
-const DEFAULT_GEN_SETTINGS: TableGenSettings = {
-	time_axis_path: "",
-	inquire_axis_path: "",
-	collect_links: "front",
-	include_first: true,
-	include_last: true,
-};
+import {renderData} from './rendering';
 
 export default class TableRenderModal extends Modal {
 	settings: TableGenSettings;
 
 	constructor(app: App) {
 		super(app);
-		this.settings = DEFAULT_GEN_SETTINGS;
+		this.settings = Object.assign({}, DEFAULT_GEN_SETTINGS);
 	}
 
 	// Called when the modal is given the open() call, generate view
