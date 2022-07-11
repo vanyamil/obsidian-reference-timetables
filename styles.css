@@ -1,4 +1,5 @@
-/* Sets all the text color to red! */
-.overflow-x-auto {
+/* Responsive table can be done through this style applied to parent */
+.table-parent {
     overflow-x: auto;
+    text-align: center;
 }

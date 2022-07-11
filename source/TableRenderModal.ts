@@ -13,7 +13,7 @@ import {
 	TableGenSettings,
 } from './types';
 import {DEFAULT_GEN_SETTINGS} from './constants';
-import generateData from './generation';
+import DataGenerator from './generation';
 import {renderData} from './rendering';
 
 export default class TableRenderModal extends Modal {
@@ -81,7 +81,7 @@ export default class TableRenderModal extends Modal {
 					.setCta()
 					.setButtonText("Generate")
 					.onClick((evt: MouseEvent) => {
-						const data = generateData(this.settings, this.app.metadataCache.resolvedLinks);
+						const data = new DataGenerator(this.app).generateData(this.settings);
 						renderData(data);
 					})
 			);

@@ -1,7 +1,7 @@
 import {Notice} from 'obsidian';
 
 import {DEFAULT_GEN_SETTINGS, PLUGIN_TITLE} from './constants';
-import generateData from './generation';
+import DataGenerator from './generation';
 import {dataIntoHtml} from './rendering';
 
 export default function codeblockProcessor(source: string, el: HTMLElement) {
@@ -23,7 +23,7 @@ export default function codeblockProcessor(source: string, el: HTMLElement) {
 	});
 	console.debug("Generating with settings:", settings);
 	// Generate data
-	const data = generateData(settings, this.app.metadataCache.resolvedLinks);
+	const data = new DataGenerator(this.app).generateData(settings);
 	console.debug("Generated data:", data);
 	// Render on the el as root
 	dataIntoHtml(data, el);
